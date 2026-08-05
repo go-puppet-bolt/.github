@@ -1,7 +1,7 @@
 <p align="center"><img src="https://raw.githubusercontent.com/go-puppet-bolt/brand/main/social/go-puppet-bolt.png" alt="go-puppet-bolt" width="640"></p>
 
 <h1 align="center">go-puppet-bolt</h1>
-<p align="center"><strong>Puppet Bolt core in pure Go — inventory, tasks and YAML plans with a transport abstraction.</strong></p>
+<p align="center"><strong>Puppet Bolt core in pure Go — inventory, tasks, YAML and Puppet-language plans, and SSH / WinRM / local transports.</strong></p>
 
 <p align="center">
   🌐 <a href="https://go-puppet-bolt.github.io">Website</a> ·
@@ -17,7 +17,7 @@
 
 ---
 
-go-puppet-bolt is a pragmatic, pure-Go (CGO_ENABLED=0) port of the core of Puppet Bolt, the agentless orchestrator. It parses Bolt inventory, tasks and YAML plans and runs them through a pluggable transport — with no Ruby runtime and no cgo, so it cross-compiles to every 64-bit Go target and WebAssembly and links into a static binary. Inventory v2 resolves effective config / facts / vars through the group hierarchy and selects targets by name, alias, group or glob; tasks validate arguments against declared parameter types; YAML plans run an ordered sequence of task / command / script / eval / plan steps; and an Executor runs work across targets into a ResultSet. Its only dependency is the fleet's pure-Go YAML loader. 100% coverage, six arches.
+go-puppet-bolt is a pragmatic, pure-Go (CGO_ENABLED=0) port of the core of Puppet Bolt, the agentless orchestrator. It parses Bolt inventory, tasks and plans and runs them over pluggable transports — with no Ruby runtime and no cgo, so it cross-compiles to every 64-bit Go target and WebAssembly and links into a static binary. Inventory v2 resolves effective config / facts / vars through the group hierarchy and selects targets by name, alias, group or glob; tasks validate arguments against declared parameter types; YAML plans run an ordered sequence of task / command / script / eval / plan / resources / message steps; Puppet-language (.pp) plans run through go-puppet/puppet with their plan functions dispatched to real targets; apply blocks compile a catalog and report; and an Executor runs work across targets — over a host-local, a full SSH (x/crypto/ssh) or a full WinRM (WS-Management) transport — into a ResultSet. Its non-stdlib dependencies are all pure Go. 100% coverage, six arches.
 
 ## Repositories
 
@@ -30,9 +30,9 @@ go-puppet-bolt is a pragmatic, pure-Go (CGO_ENABLED=0) port of the core of Puppe
 
 ## Principles
 
-- **Pure Go, zero cgo.** `CGO_ENABLED=0`; imports the Go standard library plus the fleet's pure-Go YAML loader (<a href="https://github.com/go-ruby-yaml/yaml">go-ruby-yaml/yaml</a>). Cross-compiles to the
+- **Pure Go, zero cgo.** `CGO_ENABLED=0`; imports the Go standard library and a few pure-Go dependencies (<a href="https://github.com/go-ruby-yaml/yaml">go-ruby-yaml/yaml</a>, <a href="https://pkg.go.dev/golang.org/x/crypto/ssh">golang.org/x/crypto/ssh</a>, <a href="https://github.com/Azure/go-ntlmssp">go-ntlmssp</a>, <a href="https://github.com/go-puppet/puppet">go-puppet/puppet</a>). Cross-compiles to the
   six 64-bit Go targets (amd64, arm64, riscv64, loong64, ppc64le, s390x) and WebAssembly, linking into a static binary.
-- **Faithful to Bolt's inventory v2, task metadata and YAML plan shapes.**
+- **Faithful to Bolt's inventory v2, task metadata, YAML and Puppet-language plan shapes.**
 - **An engine, not a service.** A small, stable Go API you embed — part of the
   pure-Go Puppet stack (siblings [go-facter](https://github.com/go-facter),
   [go-hiera](https://github.com/go-hiera), [go-pcore](https://github.com/go-pcore),
